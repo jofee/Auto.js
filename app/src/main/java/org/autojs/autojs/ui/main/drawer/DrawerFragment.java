@@ -2,13 +2,11 @@ package org.autojs.autojs.ui.main.drawer;
 
 import android.annotation.SuppressLint;
 import android.app.AppOpsManager;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -22,9 +20,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
-import com.bumptech.glide.request.target.CustomViewTarget;
-import com.bumptech.glide.request.target.SimpleTarget;
-import com.bumptech.glide.request.transition.Transition;
 import com.stardust.app.AppOpsKt;
 import com.stardust.app.GlobalAppContext;
 import com.stardust.notification.NotificationListenerService;
@@ -39,16 +34,13 @@ import org.autojs.autojs.ui.common.NotAskAgainDialog;
 import org.autojs.autojs.ui.floating.CircularMenu;
 import org.autojs.autojs.ui.floating.FloatyWindowManger;
 import org.autojs.autojs.network.NodeBB;
-import org.autojs.autojs.network.VersionService;
 import org.autojs.autojs.network.api.UserApi;
 import org.autojs.autojs.network.entity.user.User;
-import org.autojs.autojs.network.entity.VersionInfo;
 import org.autojs.autojs.tool.SimpleObserver;
 import org.autojs.autojs.ui.main.MainActivity;
 import org.autojs.autojs.ui.main.community.CommunityFragment;
 import org.autojs.autojs.ui.user.LoginActivity_;
 import org.autojs.autojs.ui.settings.SettingsActivity;
-import org.autojs.autojs.ui.update.UpdateInfoDialogBuilder;
 import org.autojs.autojs.ui.user.WebActivity;
 import org.autojs.autojs.ui.user.WebActivity_;
 import org.autojs.autojs.ui.widget.AvatarView;
@@ -335,30 +327,6 @@ public class DrawerFragment extends androidx.fragment.app.Fragment {
 
     void checkForUpdates(DrawerMenuItemViewHolder holder) {
         setProgress(mCheckForUpdatesItem, true);
-        VersionService.getInstance().checkForUpdates()
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new SimpleObserver<VersionInfo>() {
-
-                    @Override
-                    public void onNext(@io.reactivex.annotations.NonNull VersionInfo versionInfo) {
-                        if (getActivity() == null)
-                            return;
-                        if (versionInfo.isNewer()) {
-                            new UpdateInfoDialogBuilder(getActivity(), versionInfo)
-                                    .show();
-                        } else {
-                            Toast.makeText(GlobalAppContext.get(), R.string.text_is_latest_version, Toast.LENGTH_SHORT).show();
-                        }
-                        setProgress(mCheckForUpdatesItem, false);
-                    }
-
-                    @Override
-                    public void onError(@io.reactivex.annotations.NonNull Throwable e) {
-                        e.printStackTrace();
-                        Toast.makeText(GlobalAppContext.get(), R.string.text_check_update_error, Toast.LENGTH_SHORT).show();
-                        setProgress(mCheckForUpdatesItem, false);
-                    }
-                });
     }
 
 
